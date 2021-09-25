@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
 
 
     // Start is called before the first frame update
-    private void Awake()
+    private void Start()
     {
         animator = GetComponent<CharacterAnimator>();
         character = GetComponent<Character>();

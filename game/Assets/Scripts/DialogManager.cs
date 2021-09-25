@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DialogManager : MonoBehaviour
@@ -37,6 +38,11 @@ public class DialogManager : MonoBehaviour
                 currentLine = 0;
                 dialogBox.SetActive(false);
                 OnCloseDialog?.Invoke();
+
+                if (dialog.switchToScene >= 0)
+                {
+                    yield return SceneManager.LoadSceneAsync(dialog.sceneToLoad);
+                }
             }
         }
     }

@@ -11,10 +11,20 @@ public class Character : MonoBehaviour
 
     public CharacterAnimator Animator { get => animator; }
     
-    private void Start()
+    private void Awake()
     {
         animator = GetComponent<CharacterAnimator>();
+        SetPositionAndSnapToTile(transform.position);
     }
+
+    public void SetPositionAndSnapToTile(Vector2 pos)
+    {
+        pos.x = Mathf.Floor(pos.x) + 0.5f;
+        pos.y = Mathf.Floor(pos.y) + 0.8f;
+
+        transform.position = pos;
+    }
+
 
     public void HandleUpdate()
     {
