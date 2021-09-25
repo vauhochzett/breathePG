@@ -39,9 +39,9 @@ public class DialogManager : MonoBehaviour
                 dialogBox.SetActive(false);
                 OnCloseDialog?.Invoke();
 
-                if (dialog.switchToScene >= 0)
+                if (dialog.SwitchSceneId >= 0)
                 {
-                    yield return SceneManager.LoadSceneAsync(dialog.sceneToLoad);
+                    SceneManager.LoadSceneAsync(dialog.SwitchSceneId);
                 }
             }
         }

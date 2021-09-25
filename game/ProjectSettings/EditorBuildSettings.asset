@@ -11,4 +11,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Start.unity
     guid: 11ff93a4457785040900c52aa58f4928
+  - enabled: 1
+    path: Assets/Scenes/StartTransformed.unity
+    guid: 1f002fb65729e3b43a34952b77bca620
+  - enabled: 1
+    path: Assets/Scenes/Running.unity
+    guid: 77414717207d8974a99da0f0e50c3330
+  - enabled: 1
+    path: Assets/Scenes/Overworld.unity
+    guid: 898f0ca82c35abc4592b5776710cef42
   m_configObjects: {}
