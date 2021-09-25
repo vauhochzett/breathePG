@@ -47,6 +47,9 @@ TagManager:
   - name: Foreground
     uniqueID: 774032583
     locked: 0
+  - name: Bridge
+    uniqueID: 3489548677
+    locked: 0
   - name: Player
     uniqueID: 3477469851
     locked: 0

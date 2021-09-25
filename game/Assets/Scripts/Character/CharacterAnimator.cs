@@ -18,6 +18,8 @@ public class CharacterAnimator : MonoBehaviour
 
     SpriteAnimator currentAnim;
 
+    bool wasPreviouslyMoving;
+
     public float MoveX { get; set; }
     public float MoveY { get; set; }
     public bool IsMoving { get; set; }
@@ -25,6 +27,13 @@ public class CharacterAnimator : MonoBehaviour
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        walkDownAnim = new SpriteAnimator(walkDownSprites, spriteRenderer);
+        walkUpAnim = new SpriteAnimator(walkUpSprites, spriteRenderer);
+        walkLeftAnim = new SpriteAnimator(walkLeftSprites, spriteRenderer);
+        walkRightAnim = new SpriteAnimator(walkRightSprites, spriteRenderer);
+
+        wasPreviouslyMoving = false;
+        currentAnim = walkDownAnim;
     }
     private void Update()
     {
@@ -39,10 +48,14 @@ public class CharacterAnimator : MonoBehaviour
         else if (MoveY == -1)
             currentAnim = walkDownAnim;
 
+        if (currentAnim != prevAnim || IsMoving != wasPreviouslyMoving)
+            currentAnim.Start();
+
         if (IsMoving)
             currentAnim.HandleUpdate();
         else
             spriteRenderer.sprite = currentAnim.Frames[0];
 
+        wasPreviouslyMoving = IsMoving;
     }
 }

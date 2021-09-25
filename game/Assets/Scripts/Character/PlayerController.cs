@@ -5,24 +5,26 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed;
-    public bool isMoving;
     public Vector2 input;
+    public bool isMoving;
 
     public event Action onEncountered;
 
-    private Animator animator;
+    protected CharacterAnimator animator;
+    protected Character character;
+
 
     // Start is called before the first frame update
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        animator = GetComponent<CharacterAnimator>();
+        character = GetComponent<Character>();
     }
 
     // Update is called once per frame
     public void HandleUpdate() 
     {
-        if (!isMoving)
+        if (!character.IsMoving)
         {
             input.x = Input.GetAxisRaw("Horizontal");
             input.y = Input.GetAxisRaw("Vertical");
@@ -31,19 +33,10 @@ public class PlayerController : MonoBehaviour
 
             if (input != Vector2.zero)
             {
-                Vector3 targetPos = transform.position;
-                targetPos.x += input.x;
-                targetPos.y += input.y;
-
-                if (isWalkable(targetPos))
-                {
-                    StartCoroutine(Move(targetPos));
-                }
-                animator.SetFloat("MoveX", input.x);
-                animator.SetFloat("MoveY", input.y);
+                StartCoroutine(character.Move(input, OnMoveOver));
             }
         }
-        animator.SetBool("isMoving", isMoving);
+        character.HandleUpdate();
 
         if (Input.GetKeyDown(KeyCode.Z))
             Interact();
@@ -51,7 +44,8 @@ public class PlayerController : MonoBehaviour
 
     void Interact()
     {
-        var facingDir = new Vector3(animator.GetFloat("MoveX"), animator.GetFloat("MoveY"));
+        var facingDir = new Vector3(
+            character.Animator.MoveX, character.Animator.MoveY);
         var interactPos = transform.position + facingDir;
 
         var collider = Physics2D.OverlapCircle(
@@ -64,27 +58,18 @@ public class PlayerController : MonoBehaviour
 
     private void OnMoveOver()
     {
-        // (Physics2D.OverlapCircle(transform.position, 0.3f, interactableLayer))
+        var colliders = Physics2D.OverlapCircleAll(
+            transform.position, 0.3f, GameLayers.i.TriggerableLayers);
 
-    }
-
-    IEnumerator Move(Vector3 targetPos)
-    {
-        isMoving = true;
-        while((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
+        foreach( var collider in colliders)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position, targetPos, moveSpeed * Time.deltaTime);
-            yield return null;
+            var triggerable = collider.GetComponent<IPlayerTriggerable>();
+            if (triggerable != null)
+            {
+                triggerable.OnPlayerTriggered(this);
+                break;
+            }
         }
-        transform.position = targetPos;
-        isMoving = false;
-    }
-
-    private bool isWalkable(Vector3 targetPos)
-    {
-        return Physics2D.OverlapCircle(
-            targetPos, 0.2f, GameLayers.i.SolidLayer | GameLayers.i.InteractableLayer) == null;
     }
 
 

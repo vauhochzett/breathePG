@@ -1,18 +1,54 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public float moveSpeed;
+    CharacterAnimator animator;
+    public bool IsMoving;
+
+    public CharacterAnimator Animator { get => animator; }
+    
+    private void Start()
     {
-        
+        animator = GetComponent<CharacterAnimator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void HandleUpdate()
     {
-        
+        animator.IsMoving = IsMoving;
+    }
+
+    public IEnumerator Move(Vector3 moveVec, Action OnMoveOver=null)
+    {
+        animator.MoveX = moveVec.x;
+        animator.MoveY = moveVec.y;
+
+        Vector3 targetPos = transform.position;
+        targetPos.x += moveVec.x;
+        targetPos.y += moveVec.y;
+
+        if (!IsWalkable(targetPos))
+            yield break;
+
+        IsMoving = true;
+
+        while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position, targetPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+        transform.position = targetPos;
+        IsMoving = false;
+
+        OnMoveOver?.Invoke();
+    }
+    private bool IsWalkable(Vector3 targetPos)
+    {
+        return Physics2D.OverlapCircle(
+            targetPos, 0.2f, GameLayers.i.SolidLayer | GameLayers.i.InteractableLayer) == null;
     }
 }

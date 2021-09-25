@@ -12,12 +12,12 @@ public class NPCController : MonoBehaviour, Interactable
     private void Start()
     {
         spriteAnimator = new SpriteAnimator(sprites, GetComponent<SpriteRenderer>());
-        spriteAnimator.Start();
+        // spriteAnimator.Start();
     }
 
     private void Update()
     {
-        spriteAnimator.HandleUpdate();
+        // spriteAnimator.HandleUpdate();
     }
 
     public void Interact()

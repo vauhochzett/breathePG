@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour, IPlayerTriggerable
 {
-    public void onPlayerTriggered(PlayerController player)
+    [SerializeField] int sceneToLoad = -1;
+
+    public void OnPlayerTriggered(PlayerController player)
     {
-        Debug.Log("onPlayerTrigger");
+        StartCoroutine(SwitchScene());
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    IEnumerator SwitchScene()
     {
-        
+        yield return SceneManager.LoadSceneAsync(sceneToLoad);
     }
 }
